@@ -22,63 +22,74 @@ namespace NHD_UATE
 
     public partial class MainWindow : Window
     {
-        string main_dir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-        string displayFolder;
-        Display selected_display;
+        private Display _selected_display;
+
+        public Display selected_display
+        {
+            get { return _selected_display; }
+            set
+            {
+                _selected_display = value;
+                
+                Update_GUI();
+
+            }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // The folder for the roaming current user 
-
-
-            // Combine the base folder with your specific folder....
-            displayFolder = System.IO.Path.Combine(main_dir, "NHD-UATE/Displays");
-
-            Debug.WriteLine(displayFolder);
-
-            Directory.CreateDirectory(displayFolder);
-
-            string[] entries = Directory.GetDirectories(displayFolder, "*", SearchOption.AllDirectories).Select(d => new DirectoryInfo(d).Name).ToArray();
-
-            foreach (var entry in entries)
-            {
-                display_select.Items.Add(entry);
-            }
 
             // Get a list of serial port names.
             string[] ports = SerialPort.GetPortNames();
 
             foreach (string port in ports)
             {
+
                 COMA.Items.Add(port);
                 COMB.Items.Add(port);
+
+            }
+
+            try
+            {
+                if (COMA.Items.Contains("COM12"))
+                {
+                    COMA.Text = "COM12";
+                    Reset_MCU(1);
+                }
+                if (COMB.Items.Contains("COM4"))
+                {
+                    COMB.Text = "COM4";
+                    Reset_MCU(2);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
 
         }
 
         private void display_select_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
+        }
+
+        private void Update_GUI()
+        {
             Test.IsEnabled = true;
             Stop.IsEnabled = true;
-            disp_image.Source = new BitmapImage(new Uri(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Displays/" + display_select.SelectedItem.ToString() + "/" + display_select.SelectedItem.ToString() + ".png"), UriKind.Absolute));
-            output_image.Source = new BitmapImage(new Uri(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Displays/" + display_select.SelectedItem.ToString() + "/" + display_select.SelectedItem.ToString() + "_output.jpg"), UriKind.Absolute));
-            string[] lines = File.ReadAllLines(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Displays/" + display_select.SelectedItem.ToString() + "/" + display_select.SelectedItem.ToString() + "_conf.csv"));
+            disp_image.Source = new BitmapImage(new Uri(System.IO.Path.Combine(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".png"), UriKind.Absolute));
+            output_image.Source = new BitmapImage(new Uri(System.IO.Path.Combine(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + "_output.jpg"), UriKind.Absolute));
+            //string[] lines = File.ReadAllLines(System.IO.Path.Combine(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + "_conf.csv"));
 
-            IEnumerable<Display> conf = lines.Select(line =>
-            {
-                string[] data = line.Split('\t');
-                // We return a person with the data in order.
-                return selected_display = new Display(data[0], data[1], data[2], data[3], data[4]);
-            });
-
-            selected_display = new Display(conf.ElementAt(1).Name, conf.ElementAt(1).Description, conf.ElementAt(1).Rev, conf.ElementAt(1).Interface, conf.ElementAt(1).Logic);
         }
 
         private void Test_Click(object sender, RoutedEventArgs e)
         {
-            
+
 
             if (selected_display.Interface == "HDMI")
             {
@@ -99,10 +110,27 @@ namespace NHD_UATE
 
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
+            Reset_MCU(1);
+            Reset_MCU(2);
+
+        }
+
+        private void Upload_Firmware()
+        {
             console.Clear();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "cmd";
-            startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -PCOM12 -b115200 -D -Uflash:w:" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Blanking/Blank.hex:i";
+            if (selected_display.Logic == "5V")
+            {
+                Reset_MCU(2);
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA.Text + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+            }
+            else if (selected_display.Logic == "3.3V")
+            {
+                Reset_MCU(1);
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB.Text + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+            }
+
             //startInfo.Arguments = "/c ipconfig";
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
@@ -112,7 +140,8 @@ namespace NHD_UATE
 
             Process HEX_upload = new Process();
             HEX_upload.StartInfo = startInfo;
-            console.AppendText(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Blanking/Blank.hex\n\n");
+
+            console.AppendText(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex\n\n");
 
             HEX_upload.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler((sender, e) =>
             {
@@ -126,34 +155,30 @@ namespace NHD_UATE
             });
             HEX_upload.Start();
             HEX_upload.BeginErrorReadLine();
-
         }
 
-        private void Upload_Firmware()
+        private void Reset_MCU(int MCU)
         {
             console.Clear();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "cmd";
-            if (selected_display.Logic == "5V")
+
+            if (MCU == 1)
             {
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA.Text + " -b115200 -D -Uflash:w:" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Displays/" + display_select.SelectedItem.ToString() + "/" + display_select.SelectedItem.ToString() + ".hex" + ":i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA.Text + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
             }
-            else if (selected_display.Logic == "3.3V")
+            else if (MCU == 2)
             {
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB.Text + " -b115200 -D -Uflash:w:" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Displays/" + display_select.SelectedItem.ToString() + "/" + display_select.SelectedItem.ToString() + ".hex" + ":i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB.Text + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
             }
 
-            //startInfo.Arguments = "/c ipconfig";
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
-            //startInfo.RedirectStandardInput = true;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
 
             Process HEX_upload = new Process();
             HEX_upload.StartInfo = startInfo;
-
-            console.AppendText(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "/NHD-UATE/Displays/" + display_select.SelectedItem.ToString() + "/" + display_select.SelectedItem.ToString() + ".hex\n\n");
 
             HEX_upload.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler((sender, e) =>
             {
@@ -173,6 +198,18 @@ namespace NHD_UATE
         {
             Sketch HDMI_test = new Sketch();
             HDMI_test.Show();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Reset_MCU(1);
+            Reset_MCU(2);
+        }
+
+        private void Select_Display_Click(object sender, RoutedEventArgs e)
+        {
+            DisplayMenu menu = new DisplayMenu();
+            menu.Show();
         }
     }
 }
