@@ -36,16 +36,20 @@ namespace NHD_UATE.Viewmodels
 
             int x = 0;
             int y = 0;
+            int page = 0;
 
             foreach (var entry in entries)
             {
-                Debug.WriteLine(entry);
+                
+
+                Debug.WriteLine(x + " | " + y);
                 DisplayOption option = new DisplayOption(x, y, main_grid, displayFolder, entry);
 
 
                 
-                if (x < 11) { x++; } else { x = 0; }
-                if (y < 4 && x == 0) { y++; } else if (y >= 4) { y = 0; }
+                if (x < page + 3) { x++; }
+                if (y < 4 && x == page + 3) { y++; x = page; }
+                if (y == 4 && x == page + 3) { y = 0; page += 3; x = page; }
             }
         }
 

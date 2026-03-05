@@ -27,18 +27,18 @@
                             <RowDefinition Height="5"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
+                            <ColumnDefinition Width="325" />
                         </Grid.ColumnDefinitions>
 
                     </Grid>

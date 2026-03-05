@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace NHD_UATE.Viewmodels.Options
 {
@@ -19,6 +21,8 @@ namespace NHD_UATE.Viewmodels.Options
             _name = name;
             Button option = new Button();
             option.Content = name;
+            option.FontFamily = new System.Windows.Media.FontFamily("Arial Black");
+            option.FontSize = 20;
             option.Margin = new Thickness(10);
             option.Click += Click;
 
