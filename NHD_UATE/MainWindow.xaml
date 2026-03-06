@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:NHD_UATE"
         mc:Ignorable="d"
         ResizeMode="CanResize"
+        ShowInTaskbar="False"
         Closing="Window_Closing"    
         WindowStyle="None"
         WindowState="Maximized"

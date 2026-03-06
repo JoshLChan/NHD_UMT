@@ -32,7 +32,7 @@ namespace NHD_UATE.Viewmodels
 
             Directory.CreateDirectory(displayFolder);
 
-            string[] entries = Directory.GetDirectories(displayFolder, "*", SearchOption.AllDirectories).Select(d => new DirectoryInfo(d).Name).ToArray();
+            string[] entries = Directory.GetDirectories(displayFolder, "*", SearchOption.TopDirectoryOnly).Select(d => new DirectoryInfo(d).Name).ToArray();
 
             int x = 0;
             int y = 0;
