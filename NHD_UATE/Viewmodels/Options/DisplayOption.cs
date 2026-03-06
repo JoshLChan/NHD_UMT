@@ -20,11 +20,18 @@ namespace NHD_UATE.Viewmodels.Options
             _path = filePath;
             _name = name;
             Button option = new Button();
-            option.Content = name;
-            option.FontFamily = new System.Windows.Media.FontFamily("Arial Black");
-            option.FontSize = 20;
+            TextBlock text = new TextBlock();
+
+            
+            text.FontFamily = new System.Windows.Media.FontFamily("Arial Black");
+            text.FontSize = 20;
+            text.Text = name;
+            text.TextWrapping = TextWrapping.Wrap;
+
             option.Margin = new Thickness(10);
             option.Click += Click;
+            option.Content = text;
+
 
 
             parent.Children.Add(option);

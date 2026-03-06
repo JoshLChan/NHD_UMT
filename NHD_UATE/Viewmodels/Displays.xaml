@@ -43,10 +43,10 @@
 
                     </Grid>
                 </ScrollViewer>
-                
-                <Button x:Name="Back" Click="Back_Click" Grid.Row="1" Margin="10,10,543,-60" FontSize="20" FontFamily="Arial Black" Background="Red" Foreground="White">BACK</Button>
+
+                <Button x:Name="Back" Click="Back_Click" Grid.Row="1" Margin="10,10,728,-60" FontSize="20" FontFamily="Arial Black" Background="Red" Foreground="White" Height="55">BACK</Button>
             </Grid>
         </Border>
     </Viewbox>
-    
+
 </Window>

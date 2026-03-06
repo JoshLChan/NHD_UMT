@@ -19,9 +19,10 @@
 
                 <Grid Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="266" />
-                        <ColumnDefinition Width="266" />
-                        <ColumnDefinition Width="266" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
                     </Grid.ColumnDefinitions>
 
 
@@ -38,6 +39,11 @@
                     <Button x:Name="OLED_Displays" Click="OLED_Displays_Click" Grid.Column="2" Margin="10" Background="#FFE0E0E0" BorderThickness="0" FontFamily="Arial Black" FontSize="36" >
                         <TextBlock TextAlignment="Center">
             OLED <LineBreak/> Modules
+                        </TextBlock>
+                    </Button>
+                    <Button x:Name="EPAP_Displays"  Grid.Column="3" Margin="10" Background="#FFE0E0E0" BorderThickness="0" FontFamily="Arial Black" FontSize="36" >
+                        <TextBlock TextAlignment="Center">
+E-Paper <LineBreak/> Modules
                         </TextBlock>
                     </Button>
                 </Grid>
