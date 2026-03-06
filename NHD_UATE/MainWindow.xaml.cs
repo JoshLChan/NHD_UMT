@@ -36,8 +36,8 @@ namespace NHD_UATE
             }
         }
 
-        string COMA_Index = "12";
-        string COMB_Index = "4";
+        string COMA_Index = "COM4";
+        string COMB_Index = "COM3";
 
         bool hasCOMA = false;
         bool hasCOMB = false;
@@ -86,8 +86,14 @@ namespace NHD_UATE
                 Select_Display.IsEnabled = true;
                 MCU_Status.Text = "CONNECTED";
                 MCU_Status.Foreground = Brushes.Green;
+
+                Test.IsEnabled = true;
+                Stop.IsEnabled = true;
             }
-            else {
+            else
+            {
+                Test.IsEnabled = false;
+                Stop.IsEnabled = false;
                 MessageBox.Show("MCU Interface Not Connected. Please Turn On and Reconnect MCU Interface ", "WARNING", MessageBoxButton.OK, MessageBoxImage.Error);
                 Select_Display.IsEnabled = false;
                 MCU_Status.Text = "NOT CONNECTED";
@@ -102,8 +108,8 @@ namespace NHD_UATE
 
         private void Update_GUI()
         {
-            Test.IsEnabled = true;
-            Stop.IsEnabled = true;
+            Init_MCU(false);
+
             disp_image.Source = new BitmapImage(new Uri(System.IO.Path.Combine(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".png"), UriKind.Absolute));
             output_image.Source = new BitmapImage(new Uri(System.IO.Path.Combine(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + "_output.jpg"), UriKind.Absolute));
             //string[] lines = File.ReadAllLines(System.IO.Path.Combine(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + "_conf.csv"));
