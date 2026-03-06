@@ -30,46 +30,60 @@ namespace NHD_UATE
             set
             {
                 _selected_display = value;
-                
+
                 Update_GUI();
 
             }
         }
 
+        string COMA_Index = "12";
+        string COMB_Index = "4";
+
+        bool hasCOMA = false;
+        bool hasCOMB = false;
+
         public MainWindow()
         {
             InitializeComponent();
+            Init_MCU();
 
+        }
 
+        private void Init_MCU()
+        {
             // Get a list of serial port names.
             string[] ports = SerialPort.GetPortNames();
 
             foreach (string port in ports)
             {
 
-                COMA.Items.Add(port);
-                COMB.Items.Add(port);
-
-            }
-
-            try
-            {
-                if (COMA.Items.Contains("COM12"))
+                try
                 {
-                    COMA.Text = "COM12";
-                    Reset_MCU(1);
+                    if (port == "COM12")
+                    {
+                        Reset_MCU(1);
+                        hasCOMA = true;
+                    }
+
+                    if (port == "COM4")
+                    {
+                        Reset_MCU(2);
+                        hasCOMB = false;
+                    }
                 }
-                if (COMB.Items.Contains("COM4"))
+                catch (Exception ex)
                 {
-                    COMB.Text = "COM4";
-                    Reset_MCU(2);
+                    Console.WriteLine(ex.ToString());
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+
             }
 
+            if (hasCOMA && hasCOMB)
+            {
+                Select_Display.IsEnabled = true;
+                MCU_Status.Text = "CONNECTED";
+                MCU_Status.Foreground = Brushes.Green;
+            }
         }
 
         private void display_select_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -97,7 +111,7 @@ namespace NHD_UATE
             }
             else
             {
-                if (COMA.Text == "" || COMB.Text == "")
+                if (COMA_Index == "" || COMB_Index == "")
                 {
                     MessageBox.Show("COM ports not selected", "Serial Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -123,12 +137,12 @@ namespace NHD_UATE
             if (selected_display.Logic == "5V")
             {
                 Reset_MCU(2);
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA.Text + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
             }
             else if (selected_display.Logic == "3.3V")
             {
                 Reset_MCU(1);
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB.Text + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
             }
 
             //startInfo.Arguments = "/c ipconfig";
@@ -165,11 +179,11 @@ namespace NHD_UATE
 
             if (MCU == 1)
             {
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA.Text + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA_Index + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
             }
             else if (MCU == 2)
             {
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB.Text + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB_Index + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
             }
 
             startInfo.RedirectStandardOutput = true;
@@ -210,6 +224,11 @@ namespace NHD_UATE
         {
             DisplayMenu menu = new DisplayMenu();
             menu.Show();
+        }
+
+        private void Reconnect_MCU_Click(object sender, RoutedEventArgs e)
+        {
+            Init_MCU();
         }
     }
 }
