@@ -10,14 +10,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace NHD_UMT.Viewmodels
+namespace NHD_UATE.Viewmodels
 {
     /// <summary>
     /// Interaction logic for Image.xaml
     /// </summary>
-    public partial class Image : Window
+    public partial class Image_HDMI : Window
     {
-        public Image()
+        public Image_HDMI()
         {
             InitializeComponent();
         }
