@@ -235,10 +235,14 @@ namespace NHD_UATE
 
         private void Test_HDMI()
         {
-            ProcessStartInfo clone = new ProcessStartInfo();
-            clone.FileName = "cmd";
-            clone.Arguments = "DisplaySwitch.exe /clone";
-            clone.CreateNoWindow = true;
+            ProcessStartInfo clone_startinfo = new ProcessStartInfo();
+            clone_startinfo.FileName = "cmd";
+            clone_startinfo.Arguments = "DisplaySwitch.exe /clone";
+            clone_startinfo.CreateNoWindow = true;
+
+            Process clone_display = new Process();
+            clone_display.StartInfo = clone_startinfo;
+            clone_display.Start();
 
             Sketch HDMI_test = new Sketch();
             HDMI_test.Show();
