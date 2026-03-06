@@ -21,5 +21,11 @@ namespace NHD_UATE.Viewmodels
         {
             InitializeComponent();
         }
+
+        private void Stop_HDMI_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+
+        }
     }
 }
