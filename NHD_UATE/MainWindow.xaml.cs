@@ -236,8 +236,8 @@ namespace NHD_UATE
         private void Test_HDMI()
         {
             ProcessStartInfo clone_startinfo = new ProcessStartInfo();
-            clone_startinfo.FileName = "cmd";
-            clone_startinfo.Arguments = "DisplaySwitch.exe /clone";
+            clone_startinfo.FileName = "DisplaySwitch.exe";
+            clone_startinfo.Arguments = "/clone";
             clone_startinfo.CreateNoWindow = true;
 
             Process clone_display = new Process();
