@@ -33,10 +33,17 @@ namespace NHD_UATE.Viewmodels
 
         private void Stop_HDMI_Click(object sender, RoutedEventArgs e)
         {
-            Image_HDMI imageWin = new Image_HDMI();
-            imageWin.Show();
-            this.Close();
+            
+            ProcessStartInfo extend_startinfo = new ProcessStartInfo();
+            extend_startinfo.FileName = "DisplaySwitch.exe";
+            extend_startinfo.Arguments = "/extend";
+            extend_startinfo.CreateNoWindow = true;
 
+            Process extend_display = new Process();
+            extend_display.StartInfo = extend_startinfo;
+            extend_display.Start();
+
+            this.Close();
         }
     }
 }

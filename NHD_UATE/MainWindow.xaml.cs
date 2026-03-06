@@ -244,7 +244,7 @@ namespace NHD_UATE
             clone_display.StartInfo = clone_startinfo;
             clone_display.Start();
 
-            Sketch HDMI_test = new Sketch();
+            Image_HDMI HDMI_test = new Image_HDMI();
             HDMI_test.Show();
         }
 

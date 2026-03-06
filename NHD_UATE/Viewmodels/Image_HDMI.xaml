@@ -11,6 +11,8 @@
         Title="Image_HDMI" Height="450" Width="800">
     <Grid>
         <Image Source="/Images/HDMI.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
-        <Button x:Name="Stop_HDMI" Click="Stop_HDMI_Click" Content="STOP" HorizontalAlignment="Center" Margin="20" VerticalAlignment="Bottom" Padding="10" FontSize="20" FontFamily="Arial Black" Background="Red" Foreground="White" Width="304" Height="53"/>
+        
+        <Button x:Name="Stop_HDMI" Click="Stop_HDMI_Click" Content="NEXT" HorizontalAlignment="Center" Margin="20" VerticalAlignment="Bottom" Padding="10" FontSize="20" FontFamily="Arial Black" Background="#FF330D9E" Foreground="White" Width="304" Height="53"/>
+
     </Grid>
 </Window>
