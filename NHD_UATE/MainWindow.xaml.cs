@@ -87,8 +87,11 @@ namespace NHD_UATE
                 MCU_Status.Text = "CONNECTED";
                 MCU_Status.Foreground = Brushes.Green;
 
-                Test.IsEnabled = true;
-                Stop.IsEnabled = true;
+                if (_selected_display != null)
+                {
+                    Test.IsEnabled = true;
+                    Stop.IsEnabled = true;
+                }
             }
             else
             {
