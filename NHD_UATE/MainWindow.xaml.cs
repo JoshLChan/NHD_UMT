@@ -45,30 +45,33 @@ namespace NHD_UATE
         public MainWindow()
         {
             InitializeComponent();
-            Init_MCU();
+            Init_MCU(true);
 
         }
 
-        private void Init_MCU()
+        private void Init_MCU(bool reset)
         {
             // Get a list of serial port names.
             string[] ports = SerialPort.GetPortNames();
+
+            hasCOMA = false;
+            hasCOMB = false;
 
             foreach (string port in ports)
             {
 
                 try
                 {
-                    if (port == "COM12")
+                    if (port == COMA_Index)
                     {
-                        Reset_MCU(1);
+                        if (reset) Reset_MCU(1);
                         hasCOMA = true;
                     }
 
-                    if (port == "COM4")
+                    if (port == COMB_Index)
                     {
-                        Reset_MCU(2);
-                        hasCOMB = false;
+                        if (reset) Reset_MCU(2);
+                        hasCOMB = true;
                     }
                 }
                 catch (Exception ex)
@@ -83,6 +86,12 @@ namespace NHD_UATE
                 Select_Display.IsEnabled = true;
                 MCU_Status.Text = "CONNECTED";
                 MCU_Status.Foreground = Brushes.Green;
+            }
+            else {
+                MessageBox.Show("MCU Interface Not Connected. Please Turn On and Reconnect MCU Interface ", "WARNING", MessageBoxButton.OK, MessageBoxImage.Error);
+                Select_Display.IsEnabled = false;
+                MCU_Status.Text = "NOT CONNECTED";
+                MCU_Status.Foreground = Brushes.Red;
             }
         }
 
@@ -132,43 +141,50 @@ namespace NHD_UATE
         private void Upload_Firmware()
         {
             console.Clear();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = "cmd";
-            if (selected_display.Logic == "5V")
+
+            Init_MCU(false);
+
+            if (hasCOMA && hasCOMB)
             {
-                Reset_MCU(2);
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
-            }
-            else if (selected_display.Logic == "3.3V")
-            {
-                Reset_MCU(1);
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
-            }
-
-            //startInfo.Arguments = "/c ipconfig";
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            //startInfo.RedirectStandardInput = true;
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
-
-            Process HEX_upload = new Process();
-            HEX_upload.StartInfo = startInfo;
-
-            console.AppendText(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex\n\n");
-
-            HEX_upload.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler((sender, e) =>
-            {
-                //Debug.WriteLine("e.Data);
-                Dispatcher.BeginInvoke((Action)(() =>
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = "cmd";
+                if (selected_display.Logic == "5V")
                 {
-                    console.AppendText(e.Data + '\n');
-                    console.ScrollToEnd();
-                }));
+                    Reset_MCU(2);
+                    startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+                }
+                else if (selected_display.Logic == "3.3V")
+                {
+                    Reset_MCU(1);
+                    startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMB_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+                }
 
-            });
-            HEX_upload.Start();
-            HEX_upload.BeginErrorReadLine();
+                //startInfo.Arguments = "/c ipconfig";
+                startInfo.RedirectStandardOutput = true;
+                startInfo.RedirectStandardError = true;
+                //startInfo.RedirectStandardInput = true;
+                startInfo.UseShellExecute = false;
+                startInfo.CreateNoWindow = true;
+
+                Process HEX_upload = new Process();
+                HEX_upload.StartInfo = startInfo;
+
+                console.AppendText(_selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex\n\n");
+
+                HEX_upload.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler((sender, e) =>
+                {
+                    //Debug.WriteLine("e.Data);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        console.AppendText(e.Data + '\n');
+                        console.ScrollToEnd();
+                    }));
+
+                });
+                HEX_upload.Start();
+                HEX_upload.BeginErrorReadLine();
+            }
+
         }
 
         private void Reset_MCU(int MCU)
@@ -228,7 +244,7 @@ namespace NHD_UATE
 
         private void Reconnect_MCU_Click(object sender, RoutedEventArgs e)
         {
-            Init_MCU();
+            Init_MCU(true);
         }
     }
 }
