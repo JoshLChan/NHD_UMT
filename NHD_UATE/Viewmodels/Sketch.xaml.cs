@@ -21,14 +21,7 @@ namespace NHD_UATE.Viewmodels
         public Sketch()
         {
             InitializeComponent();
-            //ProcessStartInfo clone_startinfo = new ProcessStartInfo();
-            //clone_startinfo.FileName = "DisplaySwitch.exe";
-            //clone_startinfo.Arguments = "/extend";
-            //clone_startinfo.CreateNoWindow = true;
-
-            //Process clone_display = new Process();
-            //clone_display.StartInfo = clone_startinfo;
-            //clone_display.Start();
+            
         }
 
         private void Stop_HDMI_Click(object sender, RoutedEventArgs e)
