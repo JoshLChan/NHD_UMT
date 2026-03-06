@@ -52,7 +52,7 @@ namespace NHD_UATE.Viewmodels.Options
                 return new Display(data[0], data[1], data[2], data[3], data[4], "");
             });
 
-            mainwin.selected_display = new Display(_name, "", "", "", conf.ElementAt(1).Logic, _path);
+            mainwin.selected_display = new Display(_name, "", "", conf.ElementAt(1).Interface, conf.ElementAt(1).Logic, _path);
             foreach (Window window in Application.Current.Windows)
             {
                 if (window != Application.Current.MainWindow) window.Close();
