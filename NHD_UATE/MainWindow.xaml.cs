@@ -160,7 +160,7 @@ namespace NHD_UATE
                 if (selected_display.Logic == "5V")
                 {
                     Reset_MCU(2);
-                    startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
+                    startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMA_Index + " -b115200 -D -Uflash:w:" + _selected_display.Path + "/" + _selected_display.Name + "/" + _selected_display.Name + ".hex" + ":i";
                 }
                 else if (selected_display.Logic == "3.3V")
                 {
@@ -204,7 +204,7 @@ namespace NHD_UATE
 
             if (MCU == 1)
             {
-                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega2560 -cwiring -P" + COMA_Index + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
+                startInfo.Arguments = "/c cd AvrDude/ && avrdude -v -V -patmega328p -carduino -P" + COMA_Index + " -b115200 -D -Uflash:w:N:/Testers/Production_Testers/NHD-UMT/Blanking/Blank.hex:i";
             }
             else if (MCU == 2)
             {
